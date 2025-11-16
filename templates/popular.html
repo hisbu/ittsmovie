@@ -3,11 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}-popular</title>
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <h1><center>{{title}}</center></h1>
-  <h2>Popular movie page</h2>
-  <a href="/">Home</a>
+  <h2>Popular movies</h2>
+  <div class="nav-buttons">
+  <a href="/" class="btn {% if request.path == '/' %}active{% endif %}">Home</a>
+  <a href="/detail" class="btn {% if request.path == '/detail' %}active{% endif %}">Detail</a>
+  <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
+  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now</a>
+</div>
+  <div class="container">
+    {% if data.results %}
+        {% for movie in data.results %}
+          <div class="card">
+            <a href={{movie.id}}><img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"/></a>
+            <div class="title" style="font-size: large; font-weight: bold;">{{movie.title}}</div>
+            <div class="ratting">⭐ {{movie.vote_average | round(1)}}</div>
+            <div class="years">{{movie.release_date.split('-')[0]}}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+      <p>No movies found.</p>
+    {% endif %}
+  </div>
 </body>
 </html>

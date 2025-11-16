@@ -22,8 +22,8 @@
           <div class="card">
             <a href={{movie.id}}><img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"/></a>
             <div class="title" style="font-size: large; font-weight: bold;">{{movie.title}}</div>
-            <div class="ratting">⭐ {{movie.vote_average}}</div>
-            <div class="years">{{movie.release_date}}</div>
+            <div class="ratting">⭐ {{movie.vote_average | round(1)}}</div>
+            <div class="years">{{movie.release_date.split('-')[0]}}</div>
           </div>
         {% endfor %}
       {% else %}
