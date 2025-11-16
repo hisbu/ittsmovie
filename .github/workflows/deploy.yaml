@@ -34,23 +34,24 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             # Login ke Docker Hub
-            echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+            echo ${{ secrets.DOCKER_PASSWORD }} | sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
             # Pull image terbaru
-            docker pull ${{ secrets.DOCKER_USERNAME }}/ittsmovie:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/ittsmovie:latest
 
             # Stop & hapus container lama (jika ada)
-            docker stop ittsmovie || true
-            docker rm ittsmovie || true
+            sudo docker stop ittsmovie || true
+            sudo docker rm ittsmovie || true
 
             # Jalankan container baru
-            docker run -d \
+            sudo docker run -d \
               --name ittsmovie \
               -p 5004:5004 \
               --restart unless-stopped \
               ${{ secrets.DOCKER_USERNAME }}/ittsmovie:latest
 
             # Logout (opsional)
-            docker logout
+            sudo docker logout
