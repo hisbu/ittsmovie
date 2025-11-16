@@ -8,11 +8,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <h1><center>{{title}}</center></h1>
-  <h2>Home page</h2>
+  <center>
+    <h1>{{title}}</h1>
+    <h2>Home page</h2>
+  </center>
   <div class="nav-buttons">
   <a href="/" class="btn {% if request.path == '/' %}active{% endif %}">Home</a>
-  <a href="/detail" class="btn {% if request.path == '/detail' %}active{% endif %}">Detail</a>
   <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
   <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now</a>
 </div>

@@ -73,3 +73,6 @@ def popular():
 def detail():
     return render_template('detail.html', title=title_name, data=get_details())
 
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5004, debug=True)
