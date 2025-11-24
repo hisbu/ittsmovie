@@ -131,3 +131,62 @@
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+
+
+/* page */
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+.pagination a {
+    padding: 8px 16px;
+    background-color: #1e1e1e;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.2s ease;
+    border: 1px solid #444;
+}
+
+.pagination a:hover {
+    background-color: #333;
+    transform: translateY(-1px);
+}
+
+.pagination span {
+    font-weight: bold;
+    color: #222;
+}
+
+/* SORT DROPDOWN */
+.sort-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0 25px 0;
+    justify-content: center;
+}
+
+.sort-container label {
+    font-weight: bold;
+}
+
+.sort-container select {
+    padding: 6px 12px;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background: #f2f2f2;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sort-container select:hover {
+    background: #e8e8e8;
+}

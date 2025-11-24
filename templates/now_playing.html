@@ -15,7 +15,7 @@
   <div class="nav-buttons">
   <a href="/" class="btn {% if request.path == '/' %}active{% endif %}">Home</a>
   <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
-  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now</a>
+  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now Playing </a>
 </div>
   <div class="container">
     {% if data.results %}
@@ -29,6 +29,17 @@
         {% endfor %}
       {% else %}
       <p>No movies found.</p>
+    {% endif %}
+  </div>
+  <div class="pagination">
+    {% if page > 1 %}
+        <a href="/?page={{ page - 1 }}&sort_by={{ sort_by }}">⬅ Prev</a>
+    {% endif %}
+
+    <span>Page {{ page }} of {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="/?page={{ page + 1 }}&sort_by={{ sort_by }}">Next ➡</a>
     {% endif %}
   </div>
 </body>
