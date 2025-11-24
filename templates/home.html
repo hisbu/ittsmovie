@@ -15,8 +15,18 @@
   <div class="nav-buttons">
   <a href="/" class="btn {% if request.path == '/' %}active{% endif %}">Home</a>
   <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
-  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now</a>
+  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now Playing</a>
 </div>
+  <div class="sort-container">
+    <form method="get" action="/">
+      <label for="sort_by">Sort by:</label>
+      <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+          <option value="popularity.desc" {% if sort_by == 'popularity.desc' %}selected{% endif %}>Popularity</option>
+          <option value="release_date.desc" {% if sort_by == 'release_date.desc' %}selected{% endif %}>Release Date</option>
+          <option value="vote_average.desc" {% if sort_by == 'vote_average.desc' %}selected{% endif %}>Rating</option>
+      </select>
+    </form>
+  </div>
   <div class="container">
     {% if data.results %}
         {% for movie in data.results %}
@@ -31,5 +41,17 @@
       <p>No movies found.</p>
     {% endif %}
   </div>
+  <div class="pagination">
+    {% if page > 1 %}
+        <a href="/?page={{ page - 1 }}&sort_by={{ sort_by }}">⬅ Prev</a>
+    {% endif %}
+
+    <span>Page {{ page }} of {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="/?page={{ page + 1 }}&sort_by={{ sort_by }}">Next ➡</a>
+    {% endif %}
+  </div>
+
 </body>
 </html>
