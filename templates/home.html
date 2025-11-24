@@ -17,6 +17,34 @@
   <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
   <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now</a>
 </div>
+  <div>
+    <!-- <form method="get" action="/">
+      <label for="sort_by">Sort by:</label>
+      <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Popularity</option>
+          <option value="release_date" {% if sort == 'release_date' %}selected{% endif %}>Release Date</option>
+          <option value="vote_average" {% if sort == 'vote_average' %}selected{% endif %}>Rating</option>
+          <option value="title" {% if sort == 'title' %}selected{% endif %}>Titla</option>
+      </select>
+  </form>
+  <form method="get" action="/">
+      <label for="order">Sort by:</label>
+      <select name="order" id="order" onchange="this.form.submit()">
+          <option value="desc" {% if order == 'desc' %}selected{% endif %}>Desc</option>
+          <option value="asc" {% if order == 'asc' %}selected{% endif %}>Asc</option>
+      </select>
+  </form> -->
+  <select name="sort" onchange="this.form.submit()">
+      <option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Popularity</option>
+      <option value="release_date" {% if sort == 'release_date' %}selected{% endif %}>Release Date</option>
+      <option value="vote_average" {% if sort == 'vote_average' %}selected{% endif %}>Rating</option>
+  </select>
+  <select name="order" onchange="this.form.submit()">
+      <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+      <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+  </select>
+
+  </div>
   <div class="container">
     {% if data.results %}
         {% for movie in data.results %}
@@ -30,6 +58,17 @@
       {% else %}
       <p>No movies found.</p>
     {% endif %}
+  </div>
+  <div class="pagination">
+      {% if page > 1 %}
+          <a href="/?page={{ page - 1 }}&sort_by={{ sort_by }}">⬅ Prev</a>
+      {% endif %}
+
+      <span>Page {{ page }} of {{ total_pages }}</span>
+
+      {% if page < total_pages %}
+          <a href="/?page={{ page + 1 }}&sort_by={{ sort_by }}">Next ➡</a>
+      {% endif %}
   </div>
 </body>
 </html>
