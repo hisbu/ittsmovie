@@ -13,10 +13,15 @@
     <h2>Home page</h2>
   </center>
   <div class="nav-buttons">
-  <a href="/" class="btn {% if request.path == '/' %}active{% endif %}">Home</a>
-  <a href="/popular" class="btn {% if request.path == '/popular' %}active{% endif %}">Popular</a>
-  <a href="/now" class="btn {% if request.path == '/now' %}active{% endif %}">Now Playing</a>
+  <a href="{{ url_for('home') }}" class="btn {% if request.path == url_for('home') %}active{% endif %}">Home</a>
+  <a href="{{ url_for('popular') }}" class="btn {% if request.path == url_for('popular') %}active{% endif %}">Popular</a>
+  <a href="{{ url_for('now') }}" class="btn {% if request.path == url_for('now') %}active{% endif %}">Now Playing</a>
 </div>
+  {% if error_message %}
+    <div style="background:#f8d7da;color:#842029;padding:12px;border-radius:6px;margin:12px;text-align:center;">
+      <strong>Error:</strong> {{ error_message }}
+    </div>
+  {% endif %}
   <div class="sort-container">
     <form method="get" action="/">
       <label for="sort_by">Sort by:</label>
@@ -31,7 +36,7 @@
     {% if data.results %}
         {% for movie in data.results %}
           <div class="card">
-            <a href={{movie.id}}><img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"/></a>
+            <a href="{{ url_for('detail', id=movie.id, src='home', page=page, sort_by=sort_by) }}"><img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"/></a>
             <div class="title" style="font-size: large; font-weight: bold;">{{movie.title}}</div>
             <div class="ratting">⭐ {{movie.vote_average | round(1)}}</div>
             <div class="years">{{movie.release_date.split('-')[0]}}</div>
@@ -42,15 +47,15 @@
     {% endif %}
   </div>
   <div class="pagination">
-    {% if page > 1 %}
-        <a href="/?page={{ page - 1 }}&sort_by={{ sort_by }}">⬅ Prev</a>
-    {% endif %}
+  {% if page > 1 %}
+    <a href="{{ url_for('home', page=page-1, sort_by=sort_by) }}">⬅ Prev</a>
+  {% endif %}
 
-    <span>Page {{ page }} of {{ total_pages }}</span>
+  <span>Page {{ page }} of {{ total_pages }}</span>
 
-    {% if page < total_pages %}
-        <a href="/?page={{ page + 1 }}&sort_by={{ sort_by }}">Next ➡</a>
-    {% endif %}
+  {% if page < total_pages %}
+    <a href="{{ url_for('home', page=page+1, sort_by=sort_by) }}">Next ➡</a>
+  {% endif %}
   </div>
 
 </body>

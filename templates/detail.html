@@ -4,10 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}-detail</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <h1><center>{{title}}</center></h1>
+  <div class="nav-buttons">
+  <a href="{{ url_for('home') }}" class="btn {% if request.path == url_for('home') %}active{% endif %}">Home</a>
+  <a href="{{ url_for('popular') }}" class="btn {% if request.path == url_for('popular') %}active{% endif %}">Popular</a>
+  <a href="{{ url_for('now') }}" class="btn {% if request.path == url_for('now') %}active{% endif %}">Now Playing</a>
+</div>
   <h2>detail page</h2>
-  <a href="/">Home</a>
+  {% if error_message %}
+    <div style="background:#f8d7da;color:#842029;padding:12px;border-radius:6px;margin:12px;text-align:center;">
+      <strong>Error:</strong> {{ error_message }}
+    </div>
+  {% endif %}
+  <div style="margin:12px 0;">
+    <a href="{{ back_url or url_for('home') }}" style="display:inline-block;padding:8px 14px;background:#0d6efd;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;box-shadow:0 2px 6px rgba(13,110,253,0.2);">← Back</a>
+  </div>
+  <div class="container" style="margin:18px; display:flex; gap:18px; align-items:flex-start;">
+    {% if data and data.id %}
+      <div style="max-width:320px;">
+        {% if data.poster_path %}
+          <img src="https://image.tmdb.org/t/p/w500{{ data.poster_path }}" alt="{{ data.title }} poster" style="width:100%; border-radius:6px;" />
+        {% endif %}
+      </div>
+      <div style="flex:1;">
+        <h2 style="margin-top:0">{{ data.title }}</h2>
+        <p><strong>Release:</strong> {{ data.release_date }}</p>
+        <p><strong>Rating:</strong> ⭐ {{ data.vote_average }} ({{ data.vote_count }} votes)</p>
+        {% if data.runtime %}<p><strong>Runtime:</strong> {{ data.runtime }} minutes</p>{% endif %}
+        {% if data.genres %}
+          <p><strong>Genres:</strong>
+            {% for g in data.genres %}{{ g.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+          </p>
+        {% endif %}
+        {% if data.overview %}
+          <h3>Overview</h3>
+          <p>{{ data.overview }}</p>
+        {% endif %}
+      </div>
+    {% else %}
+      <p>Movie details not available.</p>
+    {% endif %}
+  </div>
 </body>
 </html>
