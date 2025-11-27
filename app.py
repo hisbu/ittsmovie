@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, url_for
 import requests
 
 app = Flask(__name__)
-title_name="It'ts Movie"
+title_name="It'ts Movies"
 pages_button = 0
 pages = 1 + pages_button
 API_KEY = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZDE5YjliY2E4YjlhY2NjZmY5ODU2NmEzZjc2MDFjZiIsIm5iZiI6MTU2MjUxMjI4Mi44MzM5OTk5LCJzdWIiOiI1ZDIyMGI5YWY0OTVlZTFkOGUzNmI1ZmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.VtGJ0l0NGePgt9s-RBM6c5Ue02NQCatQP5Lh79thDUc"

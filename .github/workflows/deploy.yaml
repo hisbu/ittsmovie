@@ -46,12 +46,16 @@ jobs:
             sudo docker stop ittsmovie || true
             sudo docker rm ittsmovie || true
 
+            
+
             # Jalankan container baru
             sudo docker run -d \
               --name ittsmovie \
               -p 5004:5004 \
               --restart unless-stopped \
               ${{ secrets.DOCKER_USERNAME }}/ittsmovie:latest
+
+            sudo docker network connect npm-networks ittsmovie || true
 
             # Logout (opsional)
             sudo docker logout
