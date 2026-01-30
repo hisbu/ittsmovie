@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7 no-js" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8 no-js" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) | !(IE 8)  ]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+    <!-- Basic need -->
+    <title>{{ title or "It's Movies" }}</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <link rel="profile" href="#">
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600">
+
+    <!-- Mobile specific meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+
+    <!-- CSS files (diadaptasi dari Film-Review-Movie-Database) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Sedikit override khusus app ini -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- CSS files -->
+	<link rel="stylesheet" href="css/plugins.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- simple preloader -->
+<div id="preloader" style="display:none;">
+    <div id="status">
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<!-- Header sederhana yang diambil dari template -->
+<header class="ht-header">
+    <div class="container">
+        <nav class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <a href="{{ url_for('home') }}">
+                    <img class="logo" src="{{ url_for('static', filename='images/logo1.png') }}" alt="logo" width="119" height="58">
+                </a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li class="{% if request.path == url_for('home') %}active{% endif %}">
+                        <a href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="{% if request.path == url_for('popular') %}active{% endif %}">
+                        <a href="{{ url_for('popular') }}">Popular</a>
+                    </li>
+                    <li class="{% if request.path == url_for('now') %}active{% endif %}">
+                        <a href="{{ url_for('now') }}">Now Playing</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li>
+                        <form class="top-search" method="get" action="{{ url_for('home') }}">
+                            <select name="sort_by">
+                                <option value="popularity.desc" {% if sort_by == 'popularity.desc' %}selected{% endif %}>Popularity</option>
+                                <option value="release_date.desc" {% if sort_by == 'release_date.desc' %}selected{% endif %}>Release date</option>
+                                <option value="vote_average.desc" {% if sort_by == 'vote_average.desc' %}selected{% endif %}>Rating</option>
+                            </select>
+                            <input type="text" name="query" placeholder="Search movie title (TMDB discover)">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+{% if error_message %}
+    <div class="container">
+        <div class="alert alert-danger" role="alert" style="margin-top:16px;">
+            <strong>Error:</strong> {{ error_message }}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Konten utama -->
+<div class="page-single">
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+<!-- footer section (diperkecil dari template asli)-->
+<footer class="ht-footer">
+    <div class="container">
+        <div class="flex-parent-ft">
+            <div class="flex-child-ft item1">
+                <a href="{{ url_for('home') }}">
+                    <img class="logo" src="{{ url_for('static', filename='images/logo1.png') }}" alt="">
+                </a>
+                <p>Simple movie browser menggunakan TMDB API.</p>
+            </div>
+            <div class="flex-child-ft item3">
+                <h4>Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('popular') }}">Popular</a></li>
+                    <li><a href="{{ url_for('now') }}">Now Playing</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JS (optional, kalau nanti mau pakai efek dari template) -->
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plugins2.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+</html>
+

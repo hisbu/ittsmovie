@@ -1,62 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <center>
-    <h1>{{title}}</h1>
-    <h2>Home page</h2>
-  </center>
-  <div class="nav-buttons">
-  <a href="{{ url_for('home') }}" class="btn {% if request.path == url_for('home') %}active{% endif %}">Home</a>
-  <a href="{{ url_for('popular') }}" class="btn {% if request.path == url_for('popular') %}active{% endif %}">Popular</a>
-  <a href="{{ url_for('now') }}" class="btn {% if request.path == url_for('now') %}active{% endif %}">Now Playing</a>
-</div>
-  {% if error_message %}
-    <div style="background:#f8d7da;color:#842029;padding:12px;border-radius:6px;margin:12px;text-align:center;">
-      <strong>Error:</strong> {{ error_message }}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row ipad-width2">
+  <div class="col-md-12">
+    <div class="title-hd">
+      <h2>Discover Movies</h2>
+      <span>Browse from TMDB</span>
     </div>
-  {% endif %}
-  <div class="sort-container">
-    <form method="get" action="/">
-      <label for="sort_by">Sort by:</label>
-      <select name="sort_by" id="sort_by" onchange="this.form.submit()">
-          <option value="popularity.desc" {% if sort_by == 'popularity.desc' %}selected{% endif %}>Popularity</option>
-          <option value="release_date.desc" {% if sort_by == 'release_date.desc' %}selected{% endif %}>Release Date</option>
-          <option value="vote_average.desc" {% if sort_by == 'vote_average.desc' %}selected{% endif %}>Rating</option>
-      </select>
-    </form>
   </div>
-  <div class="container">
+</div>
+
+<div class="row ipad-width2">
+  <div class="col-md-12">
     {% if data.results %}
-        {% for movie in data.results %}
-          <div class="card">
-            <a href="{{ url_for('detail', id=movie.id, src='home', page=page, sort_by=sort_by) }}"><img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"/></a>
-            <div class="title" style="font-size: large; font-weight: bold;">{{movie.title}}</div>
-            <div class="ratting">⭐ {{movie.vote_average | round(1)}}</div>
-            <div class="years">{{movie.release_date.split('-')[0]}}</div>
+      <div class="movie-items">
+        <div class="row">
+          <div class="slick-multiItem" style="display:flex;flex-wrap:wrap;gap:20px;">
+            {% for movie in data.results %}
+              <div class="slide-it" style="width:185px;">
+                <div class="movie-item">
+                  <div class="mv-img">
+                    <a href="{{ url_for('detail', id=movie.id, src='home', page=page, sort_by=sort_by) }}">
+                      {% if movie.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="{{ movie.title }}">
+                      {% else %}
+                        <img src="{{ url_for('static', filename='images/placeholder-poster.png') }}" alt="{{ movie.title }}">
+                      {% endif %}
+                    </a>
+                  </div>
+                  <div class="title-in">
+                    <h6>
+                      <a href="{{ url_for('detail', id=movie.id, src='home', page=page, sort_by=sort_by) }}">
+                        {{ movie.title }}
+                      </a>
+                    </h6>
+                    <p class="rate">
+                      <i class="ion-android-star"></i>
+                      <span>{{ movie.vote_average | round(1) }}</span> /10
+                    </p>
+                    <p class="run-time">
+                      {{ movie.release_date.split('-')[0] if movie.release_date }} •
+                      {{ movie.original_language | upper }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
           </div>
-        {% endfor %}
-      {% else %}
-      <p>No movies found.</p>
+        </div>
+      </div>
+    {% else %}
+      <p>Tidak ada film yang ditemukan.</p>
     {% endif %}
   </div>
-  <div class="pagination">
-  {% if page > 1 %}
-    <a href="{{ url_for('home', page=page-1, sort_by=sort_by) }}">⬅ Prev</a>
-  {% endif %}
+</div>
 
-  <span>Page {{ page }} of {{ total_pages }}</span>
-
-  {% if page < total_pages %}
-    <a href="{{ url_for('home', page=page+1, sort_by=sort_by) }}">Next ➡</a>
-  {% endif %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="topbar-filter">
+      <p>Page <span>{{ page }}</span> of {{ total_pages }}</p>
+      <div class="pagination2">
+        {% if page > 1 %}
+          <a href="{{ url_for('home', page=page-1, sort_by=sort_by) }}">Prev</a>
+        {% endif %}
+        <span class="active">{{ page }}</span>
+        {% if page < total_pages %}
+          <a href="{{ url_for('home', page=page+1, sort_by=sort_by) }}">Next</a>
+        {% endif %}
+      </div>
+    </div>
   </div>
-
-</body>
-</html>
+</div>
+{% endblock %}

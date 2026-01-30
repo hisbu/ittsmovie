@@ -75,8 +75,38 @@ def get_popular(page=1):
     except requests.RequestException as e:
         return {"results": [], "error": f"Could not load data: {str(e)}"}
 
+def get_trending(page=1, time_window="week"):
+    url = f"https://api.themoviedb.org/3/trending/movie/{time_window}"
+    params = {
+        "language": "en-US",
+        "page": page
+    }
+    headers = {
+        "accept": "application/json",
+        "Authorization": API_KEY
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=5)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"results": [], "error": f"API returned status {response.status_code}"}
+    except requests.RequestException as e:
+        return {"results": [], "error": f"Could not load data: {str(e)}"}
+    
 def get_details(id):
-    url = "https://api.themoviedb.org/3/movie/{id}?language=en-US"
+    """
+    Ambil detail film dari TMDB, beserta credits, images, dan videos
+    supaya template detail punya data yang lengkap.
+    """
+    url = f"https://api.themoviedb.org/3/movie/{id}"
+
+    params = {
+        "language": "en-US",
+        "append_to_response": "credits,images,videos",
+        "include_image_language": "en,null"
+    }
 
     headers = {
         "accept": "application/json",
@@ -84,9 +114,7 @@ def get_details(id):
     }
 
     try:
-        # ensure id interpolation
-        url = f"https://api.themoviedb.org/3/movie/{id}?language=en-US"
-        response = requests.get(url, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, params=params, timeout=5)
         if response.status_code == 200:
             return response.json()
         else:
@@ -120,6 +148,35 @@ def home():
                            sort_by=sort_by,
                            error_message=error_message)
 
+@app.route("/index")
+def index():
+    # Baca time_window dari query parameter, default ke "week"
+    time_window = request.args.get('time_window', 'week')
+    if time_window not in ['day', 'week']:
+        time_window = 'week'
+    
+    # slider utama: now playing (maks 12 item)
+    now_data = get_play_now(page=1)
+    now_playing = (now_data or {}).get("results", [])[:12]
+
+    # trending movies (maks 12 item) - sesuai dengan time_window
+    trending_data = get_trending(page=1, time_window=time_window)
+    trending_movies = (trending_data or {}).get("results", [])[:12]
+
+    # tetap kirim variabel umum agar template aman
+    error_message = now_data.get("error") if isinstance(now_data, dict) else None
+
+    return render_template(
+        "index.html",
+        title=title_name,
+        now_playing=now_playing,
+        error_message=error_message,
+        page=1,
+        total_pages=1,
+        sort_by="popularity.desc",
+        trending_movies=trending_movies,
+        time_window=time_window
+    )
 
 @app.route("/now")
 def now():
@@ -148,6 +205,25 @@ def popular():
                             error_message=error_message
                             )
 
+@app.route("/api/trending")
+def api_trending():
+    """API endpoint untuk mendapatkan trending movies dengan filter time_window"""
+    time_window = request.args.get('time_window', 'week')
+    page = int(request.args.get('page', 1))
+    
+    # Validasi time_window
+    if time_window not in ['day', 'week']:
+        time_window = 'week'
+    
+    data = get_trending(page=page, time_window=time_window)
+    trending_movies = (data or {}).get("results", [])[:12]
+    
+    return jsonify({
+        "results": trending_movies,
+        "time_window": time_window,
+        "error": data.get("error") if isinstance(data, dict) else None
+    })
+
 @app.route("/detail")
 def detail():
     # try to get id from query string if provided
@@ -161,6 +237,8 @@ def detail():
 
     if src == 'home':
         back_url = url_for('home', page=src_page or 1, sort_by=src_sort or 'popularity.desc')
+    elif src == 'index':
+        back_url = url_for('index')
     elif src == 'now':
         back_url = url_for('now', page=src_page or 1)
     elif src == 'popular':
@@ -173,4 +251,4 @@ def detail():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5004, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)

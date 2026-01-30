@@ -1,53 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}-detail</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <h1><center>{{title}}</center></h1>
-  <div class="nav-buttons">
-  <a href="{{ url_for('home') }}" class="btn {% if request.path == url_for('home') %}active{% endif %}">Home</a>
-  <a href="{{ url_for('popular') }}" class="btn {% if request.path == url_for('popular') %}active{% endif %}">Popular</a>
-  <a href="{{ url_for('now') }}" class="btn {% if request.path == url_for('now') %}active{% endif %}">Now Playing</a>
-</div>
-  <h2>detail page</h2>
-  {% if error_message %}
-    <div style="background:#f8d7da;color:#842029;padding:12px;border-radius:6px;margin:12px;text-align:center;">
-      <strong>Error:</strong> {{ error_message }}
+{% extends "base.html" %}
+
+{% block content %}
+{# Hero kosong seperti di moviesingle.html untuk memberi ruang di atas #}
+<div class="hero mv-single-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+      </div>
     </div>
-  {% endif %}
-  <div style="margin:12px 0;">
-    <a href="{{ back_url or url_for('home') }}" style="display:inline-block;padding:8px 14px;background:#0d6efd;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;box-shadow:0 2px 6px rgba(13,110,253,0.2);">← Back</a>
   </div>
-  <div class="container" style="margin:18px; display:flex; gap:18px; align-items:flex-start;">
-    {% if data and data.id %}
-      <div style="max-width:320px;">
-        {% if data.poster_path %}
-          <img src="https://image.tmdb.org/t/p/w500{{ data.poster_path }}" alt="{{ data.title }} poster" style="width:100%; border-radius:6px;" />
+</div>
+
+<div class="page-single movie-single movie_single">
+  <div class="row ipad-width2">
+    <div class="col-md-4 col-sm-12 col-xs-12">
+      <div class="movie-img sticky-sb">
+        {% if data and data.poster_path %}
+          <img src="https://image.tmdb.org/t/p/w500{{ data.poster_path }}" alt="{{ data.title }}">
+        {% else %}
+          <img src="{{ url_for('static', filename='images/placeholder-poster.png') }}" alt="{{ data.title }}">
         {% endif %}
       </div>
-      <div style="flex:1;">
-        <h2 style="margin-top:0">{{ data.title }}</h2>
-        <p><strong>Release:</strong> {{ data.release_date }}</p>
-        <p><strong>Rating:</strong> ⭐ {{ data.vote_average }} ({{ data.vote_count }} votes)</p>
-        {% if data.runtime %}<p><strong>Runtime:</strong> {{ data.runtime }} minutes</p>{% endif %}
-        {% if data.genres %}
-          <p><strong>Genres:</strong>
-            {% for g in data.genres %}{{ g.name }}{% if not loop.last %}, {% endif %}{% endfor %}
-          </p>
-        {% endif %}
-        {% if data.overview %}
-          <h3>Overview</h3>
-          <p>{{ data.overview }}</p>
+    </div>
+    <div class="col-md-8 col-sm-12 col-xs-12">
+      <div class="movie-single-ct main-content">
+        {% if data and data.id %}
+          <h1 class="bd-hd">
+            {{ data.title }}
+            {% if data.release_date %}
+              <span>{{ data.release_date.split('-')[0] }}</span>
+            {% endif %}
+          </h1>
+
+          <div class="social-btn">
+            <a href="#" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
+            <div class="hover-bnt">
+              <a href="#" class="parent-btn"><i class="ion-android-share-alt"></i>Share</a>
+              <div class="hvr-item">
+                <a href="#" class="hvr-grow"><i class="ion-social-facebook"></i></a>
+                <a href="#" class="hvr-grow"><i class="ion-social-twitter"></i></a>
+                <a href="#" class="hvr-grow"><i class="ion-social-googleplus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin:12px 0 20px;">
+            <a href="{{ back_url or url_for('home') }}" class="btn-primary">← Back</a>
+          </div>
+
+          <div class="movie-rate">
+            <div class="rate">
+              <i class="ion-android-star"></i>
+              <p>
+                <span>{{ data.vote_average }}</span> /10<br>
+                <span class="rv">{{ data.vote_count }} votes</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="movie-tabs">
+            <div class="tabs">
+              <ul class="tab-links tabs-mv">
+                <li class="active"><a href="#overview">Overview</a></li>
+                <li><a href="#info">Info</a></li>
+              </ul>
+              <div class="tab-content">
+                <div id="overview" class="tab active">
+                  <div class="row">
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                      {% if data.overview %}
+                        <p>{{ data.overview }}</p>
+                      {% else %}
+                        <p>Sinopsis tidak tersedia.</p>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-4 col-xs-12 col-sm-12">
+                      <div class="sb-it">
+                        <h6>Release date:</h6>
+                        <p>{{ data.release_date or '-' }}</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Runtime:</h6>
+                        <p>{{ data.runtime }} min</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Genres:</h6>
+                        <p>
+                          {% if data.genres %}
+                            {% for g in data.genres %}
+                              {{ g.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                          {% else %}
+                            -
+                          {% endif %}
+                        </p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Original language:</h6>
+                        <p>{{ data.original_language | upper }}</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Popularity:</h6>
+                        <p>{{ data.popularity }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="info" class="tab">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="sb-it">
+                        <h6>TMDB ID:</h6>
+                        <p>{{ data.id }}</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Status:</h6>
+                        <p>{{ data.status or '-' }}</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Tagline:</h6>
+                        <p>{{ data.tagline or '-' }}</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="sb-it">
+                        <h6>Budget:</h6>
+                        <p>{{ data.budget or 0 }}</p>
+                      </div>
+                      <div class="sb-it">
+                        <h6>Revenue:</h6>
+                        <p>{{ data.revenue or 0 }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p>Movie details not available.</p>
         {% endif %}
       </div>
-    {% else %}
-      <p>Movie details not available.</p>
-    {% endif %}
+    </div>
   </div>
-</body>
-</html>
+</div>
+{% endblock %}
+
